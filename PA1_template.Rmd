@@ -32,6 +32,10 @@ dim(df_activity)
 str(df_activity)
 ```
 
+```{r renum}
+
+df_activity <- transform(df_activity, interval=factor(sprintf("%02d:%02d",interval/100,interval%%100)))
+```
 
 ## What is mean total number of steps taken per day?
 For this part of the assignment, you can ignore the missing values in the dataset.
@@ -39,7 +43,8 @@ For this part of the assignment, you can ignore the missing values in the datase
 1. Make a histogram of the total number of steps taken each day
 
 
-```{r hist_total_number_of_steps, fig.height = 4,fig.align='center'}
+```{r hist_total_number_of_steps, fig.height = 4, fig.width = 12, fig.align='center'}
+
 if (!("ggplot2" %in% loadedNamespaces())) {
     if(!("ggplot2" %in% installed.packages()[,1])) {
         install.packages("ggplot2")
@@ -47,15 +52,15 @@ if (!("ggplot2" %in% loadedNamespaces())) {
     library(ggplot2)
 }
 
-dates<-as.Date(df_activity$date,"%Y-%m-%d")
-x_date<-strptime(dates, "%Y-%m-%d")
+dates<-as.Date(df_activity$date,"%Y-%m-%d")   # ????
+x_date<-strptime(dates, "%Y-%m-%d")           # ????
 
-
-ggplot(data=df_activity,aes(x=date, y=steps)) + 
+ggplot(data=df_activity,aes(x=as.Date(date), y=steps)) + 
     geom_bar(stat="identity",  fill="blue") +
     guides(fill=FALSE) +  
     xlab("Day") + ylab("Number of Steps") +
-    ggtitle("Total number of steps taken each day")
+    ggtitle("Total number of steps taken each day") +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
    
 ```
 
@@ -82,19 +87,28 @@ median(sm$sum.steps,na.rm = T)
 
 1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
-```{r time_series_plot, fig.height=4,fig.align='center'}
+```{r time_series_plot, fig.height=4, fig.align='center',fig.width=8}
 tbl_activity_by_interval <- group_by(tbl_df_activity,interval)
 sm <- summarize(tbl_activity_by_interval,mean(steps, na.rm=T))
 names(sm)<-c("interval","steps")
 
-plot(sm$interval,sm$steps,type="l", 
-     ylim=c(0, max(sm$steps)),
+#dates<-as.Date(df_activity$date,"%Y-%m-%d")   # ????
+#x_date<-strptime(dates, "%Y-%m-%d")           # ????
+#times <- sm$interval
+#dates_times <- paste(dates, times)
+#x<-strptime(dates_times, "%Y-%m-%d %H:%M")
+
+pos_labels = seq(1,length(sm$interval),length(sm$interval)/12)
+
+plot(1:length(sm$interval),sm$steps,type="l", 
+     ylim=c(0, max(sm$steps, na.rm=T)),
      xlab="INTERVAL", ylab="Number of steps per interval",
      xaxt = "n",
      main="Averaged Steps per interval",
      cex.axis = 0.9,
      lwd = 3)
-axis(1, at = sm$interval, labels = as.character(sm$interval))
+axis(1, at = pos_labels, labels = as.character(sm$interval[pos_labels]))
+
 ```
 
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
@@ -150,12 +164,13 @@ sum(is.na(new_df_activity$steps))
 
 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-```{r hist_total_number_of_steps_no_NAs, fig.height = 4,fig.align='center'}
-ggplot(data=new_df_activity,aes(x=date, y=steps,)) + 
+```{r hist_total_number_of_steps_no_NAs, fig.height = 4, fig.width = 12, fig.align='center'}
+ggplot(data=new_df_activity,aes(x=as.Date(date), y=steps,)) + 
     geom_bar(stat="identity",  fill="blue") +
     guides(fill=FALSE) + 
     xlab("Day") + ylab("Number of Steps") +
-    ggtitle("Total number of steps taken each day")
+    ggtitle("Total number of steps taken each day")+
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
 ```{r mean_and_median_no_NAs}
@@ -200,8 +215,18 @@ names(mn)<-c("kind","interval","mean_steps")
 
 library(lattice)
 
+pos_labels = seq(1,length(mn$interval),length(mn$interval)/24)
 xyplot( mean_steps ~ interval | kind, data = mn, 
         type="l", layout = c(1, 2),
         xlab = "INTERVAL",
-        ylab = "Averaged Number of Steps")
+        ylab = "Averaged Number of Steps", 
+        scales = list(x=list(at=pos_labels,
+                             labels = as.character(df_activity[pos_labels,]$interval))))
+
+#xyplot( mean_steps ~ interval | kind, data = mn, 
+#        type="l", layout = c(1, 2),
+#        xlab = "INTERVAL",
+#        ylab = "Averaged Number of Steps", 
+#        scales = list(x=list(at=seq(1,288,24),
+#                             labels = as.character(df_activity[seq(1,288,24),]$interval))))
 ```
