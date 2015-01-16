@@ -1,4 +1,9 @@
-# Reproducible Research: Peer Assessment 1
+---
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: true
+---
 
 # Reproducible Research: Peer Assessment 1  
 
@@ -110,7 +115,7 @@ ggplot(data=df_activity,aes(x=as.Date(date), y=steps)) +
 ## Warning: Removed 2304 rows containing missing values (position_stack).
 ```
 
-<img src="PA1_template_files/figure-html/hist_total_number_of_steps-1.png" title="" alt="" style="display: block; margin: auto;" />
+<img src="figure/hist_total_number_of_steps-1.png" title="plot of chunk hist_total_number_of_steps" alt="plot of chunk hist_total_number_of_steps" style="display: block; margin: auto;" />
 
 - **Calculate and report the mean and median total number of steps taken per day**
 
@@ -123,19 +128,6 @@ if (!("dplyr" %in% loadedNamespaces())) {
     }
     library(dplyr, quietly=TRUE)
 }
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-## 
-## The following object is masked from 'package:stats':
-## 
-##     filter
-## 
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
 ```
 
 Let's make a dplyr tbl from our data and group it by date in order to sum steps
@@ -194,7 +186,7 @@ plot(1:length(sm$interval),sm$steps,type="l",
 axis(1, at = pos_labels, labels = as.character(sm$interval[pos_labels]))
 ```
 
-<img src="PA1_template_files/figure-html/time_series_plot-1.png" title="" alt="" style="display: block; margin: auto;" />
+<img src="figure/time_series_plot-1.png" title="plot of chunk time_series_plot" alt="plot of chunk time_series_plot" style="display: block; margin: auto;" />
 
 - **Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?**
 
@@ -329,7 +321,7 @@ ggplot(data=new_df_activity,aes(x=as.Date(date), y=steps,)) +
     theme(axis.text.x = element_text(angle = 30, hjust = 1))
 ```
 
-<img src="PA1_template_files/figure-html/hist_total_number_of_steps_no_NAs-1.png" title="" alt="" style="display: block; margin: auto;" />
+<img src="figure/hist_total_number_of_steps_no_NAs-1.png" title="plot of chunk hist_total_number_of_steps_no_NAs" alt="plot of chunk hist_total_number_of_steps_no_NAs" style="display: block; margin: auto;" />
 
 Let's calculate mean and median again, now without NAs:
 
@@ -452,7 +444,7 @@ xyplot( mean_steps ~ interval | kind, data = mn,
                              labels = as.character(df_activity[pos_labels,]$interval))))
 ```
 
-<img src="PA1_template_files/figure-html/last_plot-1.png" title="" alt="" style="display: block; margin: auto;" />
+<img src="figure/last_plot-1.png" title="plot of chunk last_plot" alt="plot of chunk last_plot" style="display: block; margin: auto;" />
 
 We can see diferences in activity patterns between weekdays and weekends:
 
