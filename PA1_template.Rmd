@@ -57,13 +57,14 @@ if (!("ggplot2" %in% loadedNamespaces())) {
     if(!("ggplot2" %in% installed.packages()[,1])) {
         install.packages("ggplot2")
     }
+    library(ggplot2, quietly=TRUE)
 }
-library(ggplot2, quietly=TRUE)
 
 ggplot(data=df_activity,aes(x=as.Date(date), y=steps)) + 
     geom_bar(stat="identity",  fill="blue") +
     guides(fill=FALSE) +  
-    xlab("Day") + ylab("Number of Steps") +
+    xlab("Day") + 
+    ylab("Number of Steps") +
     ggtitle("Total number of steps taken each day") +
     theme(axis.text.x = element_text(angle = 30, hjust = 1))
    
@@ -77,11 +78,12 @@ if (!("dplyr" %in% loadedNamespaces())) {
     if(!("dplyr" %in% installed.packages()[,1])) {
         install.packages("dplyr")
     }
+    library(dplyr, quietly=TRUE)
 }
-library(dplyr, quietly=TRUE)
+
 ```
 
-Let's make a swirl tbl from our data and group it by date in order to sum steps
+Let's make a dplyr tbl from our data and group it by date in order to sum steps
 in each day:
 ```{r}
 tbl_df_activity <- tbl_df(df_activity)
@@ -207,6 +209,14 @@ median(sm$sum.steps)
 ```
 No big difference, indeed!
 
+```{r results = "hide", echo = FALSE}
+distance = sprintf("%.01f", mean(sm$sum.steps)*1.48/2)
+```
+
+As a curiosity, we can find in [Wikipedia][1]: "A **pace** (or **double-pace** or *passus*) was a measure of distance used in Ancient Rome. (...) (about 1.48 metres)". So, this person walks, averaged, `r distance` meters a day.
+
+[1]: http://en.wikipedia.org/wiki/Pace_(unit)
+
 ## Are there differences in activity patterns between weekdays and weekends?
 
 *For this part the weekdays() function may be of some help here. Use the dataset with the filled-in missing values for this part.*
@@ -261,4 +271,9 @@ xyplot( mean_steps ~ interval | kind, data = mn,
                              labels = as.character(df_activity[pos_labels,]$interval))))
 ```
 
+We can see diferences in activity patterns between weekdays and weekends:
 
+1. In weekdays ther is more activity from 06:00 to 10:00. We can see a peak around 09:00 (possibly going to work?). From 10:00 to 20:00 we have some peaks, but not too much intense.  
+2. Im weekends activity is less intense but more frequent along the day, from 08:00 to 20:00.
+
+In both cases peaks may indicate routine activities in the life of this person.

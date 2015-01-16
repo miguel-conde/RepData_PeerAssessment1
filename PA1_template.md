@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 # Reproducible Research: Peer Assessment 1  
 
@@ -99,13 +94,14 @@ if (!("ggplot2" %in% loadedNamespaces())) {
     if(!("ggplot2" %in% installed.packages()[,1])) {
         install.packages("ggplot2")
     }
+    library(ggplot2, quietly=TRUE)
 }
-library(ggplot2, quietly=TRUE)
 
 ggplot(data=df_activity,aes(x=as.Date(date), y=steps)) + 
     geom_bar(stat="identity",  fill="blue") +
     guides(fill=FALSE) +  
-    xlab("Day") + ylab("Number of Steps") +
+    xlab("Day") + 
+    ylab("Number of Steps") +
     ggtitle("Total number of steps taken each day") +
     theme(axis.text.x = element_text(angle = 30, hjust = 1))
 ```
@@ -114,7 +110,7 @@ ggplot(data=df_activity,aes(x=as.Date(date), y=steps)) +
 ## Warning: Removed 2304 rows containing missing values (position_stack).
 ```
 
-<img src="figure/hist_total_number_of_steps-1.png" title="plot of chunk hist_total_number_of_steps" alt="plot of chunk hist_total_number_of_steps" style="display: block; margin: auto;" />
+<img src="PA1_template_files/figure-html/hist_total_number_of_steps-1.png" title="" alt="" style="display: block; margin: auto;" />
 
 - **Calculate and report the mean and median total number of steps taken per day**
 
@@ -125,11 +121,24 @@ if (!("dplyr" %in% loadedNamespaces())) {
     if(!("dplyr" %in% installed.packages()[,1])) {
         install.packages("dplyr")
     }
+    library(dplyr, quietly=TRUE)
 }
-library(dplyr, quietly=TRUE)
 ```
 
-Let's make a swirl tbl from our data and group it by date in order to sum steps
+```
+## 
+## Attaching package: 'dplyr'
+## 
+## The following object is masked from 'package:stats':
+## 
+##     filter
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+Let's make a dplyr tbl from our data and group it by date in order to sum steps
 in each day:
 
 ```r
@@ -185,7 +194,7 @@ plot(1:length(sm$interval),sm$steps,type="l",
 axis(1, at = pos_labels, labels = as.character(sm$interval[pos_labels]))
 ```
 
-<img src="figure/time_series_plot-1.png" title="plot of chunk time_series_plot" alt="plot of chunk time_series_plot" style="display: block; margin: auto;" />
+<img src="PA1_template_files/figure-html/time_series_plot-1.png" title="" alt="" style="display: block; margin: auto;" />
 
 - **Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?**
 
@@ -320,7 +329,7 @@ ggplot(data=new_df_activity,aes(x=as.Date(date), y=steps,)) +
     theme(axis.text.x = element_text(angle = 30, hjust = 1))
 ```
 
-<img src="figure/hist_total_number_of_steps_no_NAs-1.png" title="plot of chunk hist_total_number_of_steps_no_NAs" alt="plot of chunk hist_total_number_of_steps_no_NAs" style="display: block; margin: auto;" />
+<img src="PA1_template_files/figure-html/hist_total_number_of_steps_no_NAs-1.png" title="" alt="" style="display: block; margin: auto;" />
 
 Let's calculate mean and median again, now without NAs:
 
@@ -344,6 +353,12 @@ median(sm$sum.steps)
 ## [1] 10766.19
 ```
 No big difference, indeed!
+
+
+
+As a curiosity, we can find in [Wikipedia][1]: "A **pace** (or **double-pace** or *passus*) was a measure of distance used in Ancient Rome. (...) (about 1.48 metres)". So, this person walks, averaged, 7967.0 meters a day.
+
+[1]: http://en.wikipedia.org/wiki/Pace_(unit)
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -437,6 +452,11 @@ xyplot( mean_steps ~ interval | kind, data = mn,
                              labels = as.character(df_activity[pos_labels,]$interval))))
 ```
 
-<img src="figure/last_plot-1.png" title="plot of chunk last_plot" alt="plot of chunk last_plot" style="display: block; margin: auto;" />
+<img src="PA1_template_files/figure-html/last_plot-1.png" title="" alt="" style="display: block; margin: auto;" />
 
+We can see diferences in activity patterns between weekdays and weekends:
 
+1. In weekdays ther is more activity from 06:00 to 10:00. We can see a peak around 09:00 (possibly going to work?). From 10:00 to 20:00 we have some peaks, but not too much intense.  
+2. Im weekends activity is less intense but more frequent along the day, from 08:00 to 20:00.
+
+In both cases peaks may indicate routine activities in the life of this person.
